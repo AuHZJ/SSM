@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+		
+	<mvc:annotation-driven/>
+	<context:component-scan base-package="com.briup.controller" />
+	<context:component-scan base-package="com.briup.bean" />
+	
+	<bean name="formatService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<set>
+				<bean class="com.briup.converter.StringToDateConverter"></bean>
+			</set>
+		</property>
+	</bean>
+	<mvc:annotation-driven conversion-service="formatService"/>
+   
+	<bean name="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> 
+	    <property name="defaultEncoding" value="UTF-8"/> 
+	    <!-- 指定所上传文件的总大小不能超过指定字节大小 --> 
+	    <property name="maxUploadSize" value="20000000"/>
+	</bean>
+		
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+          <!-- 路径问题 -->
+          <!-- 前缀
+          <property name="prefix" value="/joybeans/"/>
+          -->
+          <!-- 后缀 -->
+          <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>  
+          <property name="prefix" value="/WEB-INF/jsp/"/>
+          <property name="suffix" value=".jsp"/>
+    </bean>
+    
+    <mvc:view-controller path="/login" view-name="login"/>
+    <mvc:view-controller path="/register" view-name="register"/>
+    <mvc:view-controller path="/index" view-name="index"/>
+    <mvc:view-controller path="/alter" view-name="alter"/>
+    <mvc:view-controller path="/main" view-name="main"/>
+    <mvc:view-controller path="/staff" view-name="staff"/>
+    <mvc:view-controller path="/train" view-name="train"/>
+    <mvc:view-controller path="/traintype" view-name="traintype"/>
+    <mvc:view-controller path="/test" view-name="test"/>
+    <mvc:view-controller path="/agreement" view-name="agreement"/>
+    
+    
+     
+    <mvc:default-servlet-handler/>
+	<mvc:resources mapping="/images/**" location="/images/"/>  
+	<mvc:resources mapping="/js/**" location="/js/"/>  
+	<mvc:resources mapping="/css/**" location="/css/"/> 
+	<mvc:resources mapping="/common/**" location="/common/"/> 
+	<mvc:resources mapping="/file/**" location="/file/"/> 
+
+
+<!-- 	<mvc:message-converters register-defaults="true">
+			<bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=UTF-8</value>
+						<value>text/html;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters> -->
+
+
+</beans>

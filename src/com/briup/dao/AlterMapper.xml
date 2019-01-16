@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.AlterMapper">
+
+	<resultMap type="com.briup.bean.Alter" id="Alter">
+		<id column="ALTER_ID" property="alterId" />
+		<result column="ALTER_BTIME" property="alter_btime"/>
+		<result column="ALTER_ETIME" property="alter_etime"/>
+		<result column="ALTER_CONTENT" property="alter_content"/>
+		<collection property="staff" resultMap="Staff"></collection>
+	</resultMap>
+	
+	<!-- 配置Staff结果集 -->
+	<resultMap type="com.briup.bean.Staff" id="Staff">
+		<result column="P_NAME" property="name"/>
+	</resultMap>
+
+	<select id="findAllAlter" resultMap="Alter">
+		select ALTER_ID,P_NAME,ALTER_BTIME,ALTER_ETIME,ALTER_CONTENT
+		from STAFF s,STAFFALTER a
+		where s.P_ID=a.P_ID
+	</select>
+	<!-- 可以使用<if test="name!=null">and ALTER_CONTENT like #{pattern}</if>来整合这两个搜索 -->
+	<select id="findAlterByName" parameterType="String" resultMap="Alter">
+		<bind name="pattern" value="'%' + name + '%'" />
+		select ALTER_ID,P_NAME,ALTER_BTIME,ALTER_ETIME,ALTER_CONTENT
+		from STAFF s,STAFFALTER a
+		where s.P_ID=a.P_ID and ALTER_CONTENT like #{pattern}
+	</select>
+	
+	<insert id="insertAlter" parameterType="Alter">
+		insert into STAFFALTER 
+		values(staffalter_seq.nextval,#{staff.id},#{alter_btime},#{alter_etime},#{alter_content})
+	</insert>
+	
+	<update id="updateAlter" parameterType="Alter">
+		update STAFFALTER
+		set ALTER_BTIME=#{alter_btime},ALTER_ETIME=#{alter_etime},ALTER_CONTENT=#{alter_content}
+		where ALTER_ID=#{alterId}
+	</update>
+	
+	<delete id="deleteAlter" parameterType="int">
+		delete from STAFFALTER where ALTER_ID=#{id}
+	</delete>
+</mapper>

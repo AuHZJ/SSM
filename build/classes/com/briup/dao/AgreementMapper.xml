@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.AgreementMapper">
+
+	<resultMap type="com.briup.bean.Agreement" id="Agreement">
+		<id column="AGREEMENT_ID" property="agreement_id" />
+		<result column="AGREEMENT_BTIME" property="agreement_btime"/>
+		<result column="AGREEMENT_CONTENT" property="agreement_content"/>
+		<collection property="staff" resultMap="Staff"></collection>
+	</resultMap>
+	
+	<!-- 配置Staff结果集 -->
+	<resultMap type="com.briup.bean.Staff" id="Staff">
+		<result column="P_NAME" property="name"/>
+	</resultMap>
+
+	<select id="findAgr" resultMap="Agreement" parameterType="String">
+		select P_NAME,AGREEMENT_ID,AGREEMENT_BTIME,AGREEMENT_CONTENT
+		from STAFFAGREEMENT,STAFF
+		where STAFF.P_ID=STAFFAGREEMENT.P_ID
+		<if test="name!=null and name!=''">
+			and STAFF.P_NAME=#{name}
+		</if>
+	</select>
+	
+	<delete id="deleteAgr" parameterType="int">
+		delete from STAFFAGREEMENT where AGREEMENT_ID=#{id}
+	</delete>
+	
+	<insert id="insertAgr" parameterType="Agreement">
+		insert into STAFFAGREEMENT values(#{p_id},agreement_seq.nextval,#{agreement_btime},#{agreement_content})
+	</insert>
+	
+	<update id="updateAgr" parameterType="Agreement">
+		update STAFFAGREEMENT 
+		set AGREEMENT_BTIME=#{agreement_btime},AGREEMENT_CONTENT=#{agreement_content}
+		where AGREEMENT_ID=#{agreement_id}
+	</update>
+
+</mapper>

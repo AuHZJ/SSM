@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.StaffMapper">
+	
+	
+	<!-- 配置Department结果集 -->
+	<resultMap type="com.briup.bean.Department" id="Department">
+		<id column="DEPT_ID" property="dept_id" />
+		<result column="DEPT_NAME" property="dept_name"/>
+	</resultMap>
+	
+	<!-- 配置Staff结果集 -->
+	<resultMap type="com.briup.bean.Staff" id="Staff">
+		<id column="P_ID" property="id" />
+		<result column="P_NAME" property="name"/>
+		<result column="SEX" property="sex"/>
+		<result column="DEGREE" property="degree"/>
+		<result column="POS_NAME" property="position"/>
+		<result column="STATE" property="state"/>
+		<collection property="department" resultMap="Department"></collection>
+	</resultMap>
+	
+	<!-- List<Staff> findAllStaff(); -->
+	<select id="findAllStaff" resultMap="Staff">
+		select *
+		from STAFF s,DEPARTMENT d,POSITION p
+		where s.DEPT_ID=d.DEPT_ID and s.POS_ID=p.POS_ID
+		order by P_ID
+	</select>
+	
+
+	<select id="findStaffByName" resultMap="Staff" parameterType="String">
+		select *
+		from STAFF s,DEPARTMENT d,POSITION p
+		where s.DEPT_ID=d.DEPT_ID and s.POS_ID=p.POS_ID and s.P_NAME=#{name}
+	</select>
+	
+	<delete id="deleteStaff" parameterType="int">
+		delete from STAFF where P_ID=#{id}
+	</delete>
+	
+	<update id="updateStaff">
+		update STAFF
+		set P_NAME=#{1},
+			SEX=#{2},
+			DEGREE=#{3},
+			DEPT_ID=(select DEPT_ID from DEPARTMENT where DEPT_NAME=#{4}),
+			POS_ID=(select POS_ID from POSITION where POS_NAME=#{5}),
+			STATE=#{6},
+			USERNAME=#{7},
+			PASSWORD=#{8}
+		where P_ID=#{0}
+	</update>
+	<!-- update STAFF
+		set P_NAME='胡志金',
+			SEX='男',
+			DEGREE='研究生',
+			DEPT_ID=(select DEPT_ID from DEPARTMENT where DEPT_NAME='财务部'),
+			POS_ID=(select POS_ID from POSITION where POS_NAME='CEO'),
+			STATE='在职',
+			USERNAME='1231444',
+			PASSWORD='aadadaf'
+		where P_ID=17 -->
+	
+	<insert id="insertStaff">
+		<selectKey keyProperty="staId" resultType="int" order="BEFORE">
+			select staff_seq.nextval from dual
+		</selectKey>
+		
+		insert into STAFF(P_ID,P_NAME,SEX,DEGREE,DEPT_ID,POS_ID,STATE,USERNAME,PASSWORD)
+		values(#{staId},#{0},#{1},#{2},(select DEPT_ID from DEPARTMENT where DEPT_NAME=#{3}),(select POS_ID from POSITION where POS_NAME=#{4} and DEPT_ID=(select DEPT_ID from DEPARTMENT where DEPT_NAME=#{3})),#{5},#{6},#{7})
+	</insert>
+	
+</mapper>

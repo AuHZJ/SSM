@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.TrainMapper">
+	
+	<resultMap type="com.briup.bean.Train" id="Train">
+		<id column="TRAIN_ID" property="train_id" />
+		<result column="TRAIN_BTIME" property="train_btime"/>
+		<result column="TRAIN_ETIME" property="train_etime"/>
+		<result column="TRAIN_EXPENSE" property="train_expense"/>
+		<collection property="staff" resultMap="Staff"></collection>
+		<collection property="trainType" resultMap="TrainType"></collection>
+	</resultMap>
+	
+	<!-- 配置Staff结果集 -->
+	<resultMap type="com.briup.bean.Staff" id="Staff">
+		<result column="P_NAME" property="name"/>
+	</resultMap>
+	
+	<resultMap type="com.briup.bean.TrainType" id="TrainType">
+		<result column="TYPE_NAME" property="type_name"/>
+	</resultMap>
+	
+
+	<select id="queryTrain" resultMap="Train" parameterType="String">
+		select TRAIN_ID,TYPE_NAME,P_NAME,TRAIN_BTIME,TRAIN_ETIME,TRAIN_EXPENSE
+		from TRAIN,TRAINTYPE,STAFF
+		where TRAIN.TYPE_CODE=TRAINTYPE.TYPE_CODE and STAFF.P_ID=TRAIN.P_ID
+		<if test="name!=null and name!=''">
+			and P_NAME=#{name}
+		</if>
+	</select>
+	
+
+	
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.AdmMapper">
+
+
+
+	<!--   Administrator exist(String adminName); -->
+	<select id="exist" parameterType="String" resultType="Administrator">
+		select ADMIN_ID admId,ADMIN_USERNAME admUserName,ADMIN_PASSWORD admPassword
+		from admin
+		where ADMIN_USERNAME=#{username}
+	</select>
+	
+	<!--   Administrator check(Administrator administrator); -->
+	<select id="check" parameterType="Administrator" resultType="Administrator">
+		select ADMIN_ID admId,ADMIN_USERNAME admUserName,ADMIN_PASSWORD admPassword
+		from admin
+		where ADMIN_USERNAME=#{admUserName} and ADMIN_PASSWORD=#{admPassword}
+	</select>
+</mapper>
